@@ -239,37 +239,41 @@ return [
                 'label' => 'Mail Host',
                 'type'  => 'text',
                 'attr'  => [],
-                'value' => 'smtp.mailtrap.io'
+                'value' => env('MAIL_HOST', 'smtp.mailtrap.io')
             ],
             'MAIL_PORT' => [
                 'label' => 'Mail Port',
                 'type'  => 'number',
                 'attr'  => [],
-                'value' => '2525'
+                'value' => env('MAIL_PORT', '2525')
             ],
             'MAIL_USERNAME' => [
                 'label' => 'Mail Username',
                 'type'  => 'text',
                 'attr'  => [],
-                'value' => ''
+                'value' => env('MAIL_USERNAME', '')
             ],
             'MAIL_PASSWORD' => [
                 'label' => 'Mail Password',
                 'type'  => 'text',
                 'attr'  => [],
-                'value' => ''
+                'value' => env('MAIL_PASSWORD', '')
             ],
             'MAIL_ENCRYPTION' => [
                 'label' => 'Mail Encryption',
                 'type'  => 'text',
                 'attr'  => [],
-                'value' => ''
+                'value' =>  [
+                    'TLS'  => 'tls',
+                    'SMTP' => 'smtp',
+                    'SSL'  => 'ssl',
+                ]
             ],
             'MAIL_FROM_ADDRESS' => [
                 'label' => 'Mail From Address',
                 'type'  => 'text',
                 'attr'  => [],
-                'value' => ''
+                'value' => env('MAIL_FROM_ADDRESS')
             ],
             /*'MAIL_FROM_NAME' => [
                 'label' => 'Mail From Name',

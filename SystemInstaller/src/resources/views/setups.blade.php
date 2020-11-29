@@ -25,6 +25,8 @@
 							</a>
 							<a href="{{ route('system.installer.requirments') }}" class="btn btn-danger btn-sm prev-back">Back</a>
 
+							<i id="axios-on" class="btn fa fa-refresh fa-pulse text-success" style="display: none"></i>
+
 							<a href="#" title="Next" data-step="next" data-next="setup-{{ $keys[1] }}" class="btn btn-outline-primary btn-sm change-step next">
 								<i class="fa fa-arrow-right"></i>
 							</a>
@@ -39,6 +41,13 @@
 						</li>
 						@endforeach
 					</ul>
+
+					<p id="show-error-here-container" class="alert alert-danger px-2 mx-2 alert-dismissible fade show" style="display: none">
+						<span></span>
+						{{-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<i aria-hidden="true">×</i>
+						</button> --}}
+					</p>
 
 					<form action="{{ route('system.installer.finish') }}" id="save-setup" method="POST">
 						@csrf
@@ -71,7 +80,7 @@
 												class="form-control form-control-sm text-capitalize"
 												name="{{ $k }}">
 												@foreach ($set['value'] as $name => $value)
-													<option class="text-capitalize" value="{{ $value }}">{{ $name }}</option>
+													<option class="text-capitalize" {{ env($k) == $value ? 'selected':'' }} value="{{ $value }}">{{ $name }}</option>
 												@endforeach
 											</select>
 										@endif
@@ -133,45 +142,87 @@
 		});
 		$('body').on('click', '.change-step', function(event) {
 			event.preventDefault();
-
+			$('#show-error-here-container').hide()
 
 			step   = $(this).data('step');
 			target = $(this).data(step);
 
-			$('.setup-container').find('.setup-item').hide();
-			$('#'+target).show();
+			function changeStep() {
+				$('.setup-container').find('.setup-item').hide();
+				$('#'+target).show();
 
-			$('.nav-pills').find('.active').removeClass('active');
-			$(`span[data-id='${target}']`).addClass('active');
+				$('.nav-pills').find('.active').removeClass('active');
+				$(`span[data-id='${target}']`).addClass('active');
+
+				$(`a[data-step='prev']`).data('prev', prev);
+				$(`a[data-step='next']`).data('next', next);
+
+				// console.log(target, prev, next, first_key);
+
+				if('setup-'+first_key == target) {
+					$('.prev').addClass('block')
+					$('.prev').hide()
+					$('.prev-back').show()
+				}
+				else {
+					$('.prev').removeClass('block')
+					$('.prev').show()
+					$('.prev-back').hide()
+				}
+
+				if('setup-'+last_key == target){
+					$('.next').addClass('block')
+					$('.next').hide()
+					$('.next-finish').show()
+				}
+				else {
+					$('.next').removeClass('block')
+					$('.next').show()
+					$('.next-finish').hide()
+				}
+		    }
 
 			prev = $(`span[data-id='${target}']`).closest('li').prev().find('span').attr('data-id');
 			next = $(`span[data-id='${target}']`).closest('li').next().find('span').attr('data-id');
 
-			$(`a[data-step='prev']`).data('prev', prev);
-			$(`a[data-step='next']`).data('next', next);
+			if(prev == 'setup-database') {
+				$('#axios-on').show();
+				let database = {};
+				$.each($(`#${prev}`).find('select, input'), (index, el) => {
+					el.getAttribute('name') != '_token' ? database[el.getAttribute('name')]=el.value:'';
+				})
 
-			console.log(target, prev, next, first_key);
-
-			if('setup-'+first_key == target) {
-				$('.prev').addClass('block')
-				$('.prev').hide()
-				$('.prev-back').show()
-			}
-			else {
-				$('.prev').removeClass('block')
-				$('.prev').show()
-				$('.prev-back').hide()
-			}
-
-			if('setup-'+last_key == target){
-				$('.next').addClass('block')
-				$('.next').hide()
-				$('.next-finish').show()
-			}
-			else {
-				$('.next').removeClass('block')
-				$('.next').show()
-				$('.next-finish').hide()
+				axios.get('{{ route('system.installer.check.database') }}', {
+				  params: database,
+				}).then((response) => {
+					console.log(response);
+					if(response.data.status) changeStep();
+					else $('#show-error-here-container').show().find('span').text(response.data.message);
+				}).catch((error) => {
+				    console.error(error);
+				}).finally(() => {
+				    $('#axios-on').hide();
+				});
+			} else if(prev == 'setup-mail') {
+				$('#axios-on').show();
+				let mail = {};
+				$.each($(`#${prev}`).find('select, input'), (index, el) => {
+					el.getAttribute('name') != '_token' ? mail[el.getAttribute('name')]=el.value:'';
+				})
+				
+				axios.get('{{ route('system.installer.check.mail') }}', {
+				  params: mail,
+				}).then((response) => {
+					console.log(response);
+					if(response.data.status) changeStep();
+					else $('#show-error-here-container').show().find('span').text(response.data.message);
+				}).catch((error) => {
+				    console.error(error);
+				}).finally(() => {
+				    $('#axios-on').hide();
+				});
+			} else {
+				changeStep();
 			}
 			
 		});

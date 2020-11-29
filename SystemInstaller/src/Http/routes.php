@@ -8,3 +8,5 @@ Route::get('/setups', [AfzalSabbir\SystemInstaller\Http\Controllers\SystemInstal
 Route::post('/finish', [AfzalSabbir\SystemInstaller\Http\Controllers\SystemInstallerController::class, 'finish'])->name('system.installer.finish');
 
 Route::get('/migration', [AfzalSabbir\SystemInstaller\Http\Controllers\SystemInstallerController::class, 'migration'])->name('system.installer.migration');
+Route::get('/check-database', [AfzalSabbir\SystemInstaller\Http\Controllers\SystemInstallerController::class, 'checkDatabase'])->name('system.installer.check.database');
+Route::get('/check-mail', [AfzalSabbir\SystemInstaller\Http\Controllers\SystemInstallerController::class, 'checkMail'])->name('system.installer.check.mail');

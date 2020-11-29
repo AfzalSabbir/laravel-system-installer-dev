@@ -4,10 +4,17 @@ namespace AfzalSabbir\SystemInstaller\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Session;
+use AfzalSabbir\SystemInstaller\Http\Mail\MailChecker;
+use Illuminate\Support\Facades\Mail;
+use Session, Config;
 
 class SystemInstallerController extends Controller
 {
+	/**
+     * Create a new message instance.
+     *
+     * @return void
+	 */
 	public function __construct()
 	{
 		$this->aEmpty = 'empty><line';
@@ -133,5 +140,73 @@ class SystemInstallerController extends Controller
 		\Artisan::call('migrate:fresh', ['--force' => true]);
 
 		return redirect()->route('welcome');
+	}
+
+	/**
+	 * [checkDatabase description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
+	public function checkDatabase(Request $request)
+	{
+		try {
+			$this->setDBConfig($request->all());
+		    \DB::connection()->getPdo();
+			return response()->json(['message' => 'Connection is ok!', 'status' => 1]);
+		} catch (\Throwable $e) {
+			return response()->json(['message' => $e->getMessage(), 'status' => 0]);
+		}
+
+	}
+
+	/**
+	 * [setDBConfig description]
+	 * @param [type] $db [description]
+	 */
+	private function setDBConfig($db)
+	{
+		$pre = 'database.connections.'.$db['DB_CONNECTION'].'.';
+		Config::set($pre.'host', $db['DB_HOST']);
+		Config::set($pre.'port', $db['DB_PORT']);
+		Config::set($pre.'database', $db['DB_DATABASE']);
+		Config::set($pre.'username', $db['DB_USERNAME']);
+		Config::set($pre.'password', $db['DB_PASSWORD']);
+		return false;
+	}
+
+	/**
+	 * [checkMail description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
+	public function checkMail(Request $request)
+	{
+		try {
+			$this->setMailConfig($request->all());
+			$description = 'Testing Mail!';
+			Mail::to(config('mail.from.address'))->send(new MailChecker($description));
+			return response()->json(['message' => 'Connection is ok!', 'status' => 1]);
+		} catch (\Throwable $e) {
+			return response()->json(['message' => $e->getMessage(), 'status' => 0]);
+		}
+
+	}
+
+	/**
+	 * [setMailConfig description]
+	 * @param [type] $mail [description]
+	 */
+	private function setMailConfig($mail)
+	{
+		$pre = 'mail.mailers.'.$mail['MAIL_MAILER'];
+		// Config::set('mail.default', $mail['MAIL_MAILER']);
+		Config::set($pre.'.transport', $mail['MAIL_MAILER']);
+		Config::set($pre.'.host', $mail['MAIL_HOST']);
+		Config::set($pre.'.port', $mail['MAIL_PORT']);
+		Config::set($pre.'.username', $mail['MAIL_USERNAME']);
+		Config::set($pre.'.password', $mail['MAIL_PASSWORD']);
+		Config::set($pre.'.encryption', $mail['MAIL_ENCRYPTION']);
+		Config::set('mail.from.address', $mail['MAIL_FROM_ADDRESS']);
+		return false;
 	}
 }
