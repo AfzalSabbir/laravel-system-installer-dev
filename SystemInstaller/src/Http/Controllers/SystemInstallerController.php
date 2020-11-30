@@ -10,50 +10,44 @@ use Session, Config;
 
 class SystemInstallerController extends Controller
 {
-	/**
-     * Create a new message instance.
-     *
-     * @return void
-	 */
+    /**
+     * SystemInstallerController constructor.
+     */
 	public function __construct()
 	{
 		$this->aEmpty = 'empty><line';
 	}
 
-	/**
-	 * [index description]
-	 * @return [type] [description]
-	 */
+    /**
+     * @return mixed
+     */
 	public function index()
 	{
 		Session::remove('requirments');
 	    return view('SystemInstaller::init');
 	}
 
-	/**
-	 * [requirments description]
-	 * @return [type] [description]
-	 */
+    /**
+     * @return mixed
+     */
 	public function requirments()
 	{
 		$requirments = config('SystemInstaller.requirments');
 	    return view('SystemInstaller::requirments', ['requirments' => $requirments]);
 	}
 
-	/**
-	 * [directories description]
-	 * @return [type] [description]
-	 */
+    /**
+     * @return mixed
+     */
 	public function directories()
 	{
 		$directories = config('SystemInstaller.directories');
 	    return view('SystemInstaller::directories', ['directories' => $directories]);
 	}
 
-	/**
-	 * [setups description]
-	 * @return [type] [description]
-	 */
+    /**
+     * @return mixed
+     */
 	public function setups()
 	{
 		if(!Session::get('requirments')) return redirect()->route('system.installer.init');
@@ -61,10 +55,9 @@ class SystemInstallerController extends Controller
 	    return view('SystemInstaller::setups', ['setups' => $setups]);
 	}
 
-	/**
-	 * [finish description]
-	 * @return [type] [description]
-	 */
+    /**
+     * @return mixed
+     */
 	public function finish()
 	{
 		if(!Session::get('requirments')) return redirect()->route('system.installer.init');
@@ -77,21 +70,18 @@ class SystemInstallerController extends Controller
 		return redirect()->route('system.installer.migration');
 	}
 
-	/**
-	 * [giveDoubleQuote description]
-	 * @param  [type] $str [description]
-	 * @return [type]      [description]
-	 */
+    /**
+     * @param $str
+     * @return string
+     */
 	private function giveDoubleQuote($str)
 	{
 		return substr_count($str, " ") ? '"'.$str.'"' : $str;
 	}
 
-	/**
-	 * [rewriteEnv description]
-	 * @param  [type] $envArr  [description]
-	 * @return [type]          [description]
-	 */
+    /**
+     * @param $envArr
+     */
 	private function rewriteEnv($envArr)
 	{
 		$dotEnv = fopen(base_path(".env"), "w") or die("Unable to open file!");
@@ -99,11 +89,10 @@ class SystemInstallerController extends Controller
 		fclose($dotEnv);
 	}
 
-	/**
-	 * [getEnv description]
-	 * @param  [type] $requestData [description]
-	 * @return [type]              [description]
-	 */
+    /**
+     * @param $requestData
+     * @return array
+     */
 	private function getEnv($requestData)
 	{
 		$env = file(base_path('.env'), FILE_IGNORE_NEW_LINES);
@@ -116,12 +105,11 @@ class SystemInstallerController extends Controller
 		return $newEnv;
 	}
 
-	/**
-	 * [formatEnv description]
-	 * @param  [type] $requestData [description]
-	 * @param  [type] $newEnv      [description]
-	 * @return [type]              [description]
-	 */
+    /**
+     * @param $requestData
+     * @param $newEnv
+     * @return array
+     */
 	private function formatEnv($requestData, $newEnv)
 	{
 		$envArr = [];
@@ -131,10 +119,9 @@ class SystemInstallerController extends Controller
 		return $envArr;
 	}
 
-	/**
-	 * [migration description]
-	 * @return [type] [description]
-	 */
+    /**
+     * @return mixed
+     */
 	public function migration()
 	{
 		\Artisan::call('migrate:fresh', ['--force' => true]);
@@ -142,11 +129,10 @@ class SystemInstallerController extends Controller
 		return redirect()->route('welcome');
 	}
 
-	/**
-	 * [checkDatabase description]
-	 * @param  Request $request [description]
-	 * @return [type]           [description]
-	 */
+    /**
+     * @param Request $request
+     * @return mixed
+     */
 	public function checkDatabase(Request $request)
 	{
 		try {
@@ -159,10 +145,10 @@ class SystemInstallerController extends Controller
 
 	}
 
-	/**
-	 * [setDBConfig description]
-	 * @param [type] $db [description]
-	 */
+    /**
+     * @param $db
+     * @return false
+     */
 	private function setDBConfig($db)
 	{
 		$pre = 'database.connections.'.$db['DB_CONNECTION'].'.';
@@ -174,11 +160,10 @@ class SystemInstallerController extends Controller
 		return false;
 	}
 
-	/**
-	 * [checkMail description]
-	 * @param  Request $request [description]
-	 * @return [type]           [description]
-	 */
+    /**
+     * @param Request $request
+     * @return mixed
+     */
 	public function checkMail(Request $request)
 	{
 		try {
@@ -192,10 +177,10 @@ class SystemInstallerController extends Controller
 
 	}
 
-	/**
-	 * [setMailConfig description]
-	 * @param [type] $mail [description]
-	 */
+    /**
+     * @param $mail
+     * @return false
+     */
 	private function setMailConfig($mail)
 	{
 		$pre = 'mail.mailers.'.$mail['MAIL_MAILER'];

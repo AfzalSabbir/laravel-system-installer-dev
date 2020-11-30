@@ -14,6 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function(){
-	if(env('APP_NAME') == 'Installer') return redirect()->route('systemInstall.init');
+	if(env('APP_NAME') == 'Installer') return redirect()->route('system.installer.init');
 	return view('welcome');
 })->name('welcome');

@@ -9,15 +9,29 @@
 	{{-- <link rel="stylesheet" href="{{ asset('css/custom.css') }}"> --}}
 </head>
 <body>
-	<div class="text-center">
-		<a class="btn btn-primary position-absolute" style="top: 45%;" href="{{ route('system.installer.requirments') }}">
-			<i class="fa fa-cogs"></i> Start
-		</a>
-	</div>
+	<div class="container">
+        <div class="row align-items-center" id="h-full">
+            <div class="col-12 mx-auto">
+                <div class="h-100 justify-content-center text-center">
+                    @if(env('APP_NAME') == 'Installer')
+                        <a class="btn btn-primary" href="{{ route('system.installer.requirments') }}">
+                            <i class="fa fa-cogs"></i> Start
+                        </a>
+                    @else
+                        <a class="btn btn-primary" href="{{ route('system.installer.requirments') }}">
+                            <i class="fa fa-cogs"></i> Re-Install
+                        </a>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"></script>
-
+<script>
+    $('#h-full').css('height', innerHeight);
+</script>
 </html>

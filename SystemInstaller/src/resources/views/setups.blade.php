@@ -33,7 +33,7 @@
 							<button type="button" id="finish" class="btn btn-success btn-sm next-finish" style="display: none;">Finish</button>
 						</li>
 					</ul>
-						
+
 					<ul class="nav nav-pills my-2 justify-content-around pb-2 border-bottom">
 						@foreach ($setups as $key => $setup)
 						<li class="nav-item">
@@ -49,7 +49,7 @@
 						</button> --}}
 					</p>
 
-					<form action="{{ route('system.installer.finish') }}" id="save-setup" method="POST">
+					<form action="{{ route('system.installer.finish') }}" id="save-setup" class="pb-2" method="POST">
 						@csrf
 						@foreach ($setups as $key => $setup)
 						<div class="setup-container">
@@ -80,7 +80,7 @@
 												class="form-control form-control-sm text-capitalize"
 												name="{{ $k }}">
 												@foreach ($set['value'] as $name => $value)
-													<option class="text-capitalize" {{ env($k) == $value ? 'selected':'' }} value="{{ $value }}">{{ $name }}</option>
+													<option class="text-capitalize" {{ env($k) === $value ? 'selected':'' }} value="{{ $value }}">{{ $name }}</option>
 												@endforeach
 											</select>
 										@endif
@@ -209,7 +209,7 @@
 				$.each($(`#${prev}`).find('select, input'), (index, el) => {
 					el.getAttribute('name') != '_token' ? mail[el.getAttribute('name')]=el.value:'';
 				})
-				
+
 				axios.get('{{ route('system.installer.check.mail') }}', {
 				  params: mail,
 				}).then((response) => {
@@ -224,7 +224,7 @@
 			} else {
 				changeStep();
 			}
-			
+
 		});
 		$('body').on('click', '.nav-link', function(event) {
 			event.preventDefault();

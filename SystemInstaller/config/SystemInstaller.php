@@ -10,14 +10,14 @@ return [
     | Description
     |
     */
-   
+
     'requirments' => [
         /**
          * @param cond    : Supportable condition
          * @param v       : Supported version
          * @param comment : Comment if error occures
          * @param pass    : Always expacted true
-         * 
+         *
          */
         'php' => [
             'cond'    => '>=',
@@ -76,7 +76,7 @@ return [
     | Description
     |
     */
-   
+
     'directories' => [
         'storage' => ['framework', 'logs'],
         'other'   => ['bootstrap/cache']
@@ -90,7 +90,7 @@ return [
     | Description
     |
     */
-   
+
     'setups' => [
         'env'         => [
             'APP_NAME'  => [
@@ -100,7 +100,7 @@ return [
                     'required' => "true",
                     'minlength' => 5
                 ],
-                'value' => 'Laravel'
+                'value' => env('APP_NAME', 'Laravel')
             ],
             'APP_ENV'   => [
                 'label' => 'App Env',
@@ -132,7 +132,7 @@ return [
                 'attr'  => [
                     'required' => "true"
                 ],
-                'value' => 'http://localhost'
+                'value' => env('APP_URL', 'http://localhost')
             ],
             'LOG_LEVEL' => [
                 'label' => 'Log Level',
@@ -165,31 +165,31 @@ return [
                 'label' => 'DB Host',
                 'type'  => 'text',
                 'attr'  => [],
-                'value' => '127.0.0.1'
+                'value' => env('DB_HOST', '127.0.0.1')
             ],
             'DB_PORT' => [
                 'label' => 'DB Port',
                 'type'  => 'number',
                 'attr'  => [],
-                'value' => '3306'
+                'value' => env('DB_PORT', '3306')
             ],
             'DB_DATABASE' => [
                 'label' => 'DB Database',
                 'type'  => 'text',
                 'attr'  => [],
-                'value' => 'installer'
+                'value' => env('DB_DATABASE', 'installer')
             ],
             'DB_USERNAME' => [
                 'label' => 'DB Username',
                 'type'  => 'text',
                 'attr'  => [],
-                'value' => 'root'
+                'value' => env('DB_USERNAME', 'root')
             ],
             'DB_PASSWORD' => [
                 'label' => 'DB Password',
                 'type'  => 'text',
                 'attr'  => [],
-                'value' => ''
+                'value' => env('DB_PASSWORD', '')
             ]
         ],
         'driver'      => [
@@ -221,7 +221,7 @@ return [
                 'label' => 'Session Lifetime',
                 'type'  => 'number',
                 'attr'  => [],
-                'value' => 120
+                'value' => env('SESSION_LIFETIME', 120)
             ]
         ],
         'mail'        => [
